@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World Application</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .greeting-section {
+            display: none;
+            text-align: center;
+        }
+
+        .greeting-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #667eea;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 12px 20px;
+            background-color: #667eea;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .file-input-label:hover {
+            background-color: #764ba2;
+        }
+
+        #avatarInput {
+            display: none;
+        }
+
+        .file-name {
+            display: block;
+            margin-top: 8px;
+            color: #667eea;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .submit-btn {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background-color: #764ba2;
+        }
+
+        .submit-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .back-btn:hover {
+            background-color: #d0d0d0;
+        }
+
+        .avatar-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .avatar-container img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid #667eea;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .greeting-text {
+            font-size: 36px;
+            color: #333;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+
+        .greeting-text .name {
+            color: #667eea;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-section active">
+            <h1>Hello World</h1>
+            
+            <form id="helloForm">
+                <!-- Avatar Upload -->
+                <div class="form-group">
+                    <label for="avatarInput">Upload Avatar</label>
+                    <label for="avatarInput" class="file-input-label">
+                        Choose File
+                    </label>
+                    <input type="file" id="avatarInput" accept=".jpg,.jpeg,.png" required>
+                    <span class="file-name" id="fileName"></span>
+                    <div class="error-message" id="fileError"></div>
+                </div>
+
+                <!-- Name Input -->
+                <div class="form-group">
+                    <label for="nameInput">Enter Your Name</label>
+                    <input type="text" id="nameInput" placeholder="Type your name here" required>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="button-group">
+                    <button type="submit" class="submit-btn">Submit</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Greeting Section -->
+        <div class="greeting-section">
+            <div class="avatar-container">
+                <img id="avatarDisplay" src="" alt="Avatar">
+            </div>
+            <div class="greeting-text">
+                Hello <span class="name" id="nameDisplay"></span>!
+            </div>
+            <div class="button-group">
+                <button class="back-btn" onclick="goBack()">Go Back</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get elements
+        const avatarInput = document.getElementById('avatarInput');
+        const fileNameDisplay = document.getElementById('fileName');
+        const fileError = document.getElementById('fileError');
+        const nameInput = document.getElementById('nameInput');
+        const helloForm = document.getElementById('helloForm');
+        const formSection = document.querySelector('.form-section');
+        const greetingSection = document.querySelector('.greeting-section');
+        const avatarDisplay = document.getElementById('avatarDisplay');
+        const nameDisplay = document.getElementById('nameDisplay');
+
+        // Handle file input change
+        avatarInput.addEventListener('change', function(e) {
+            fileError.textContent = '';
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                
+                // Validate file type
+                if (!file.type.includes('image')) {
+                    fileError.textContent = 'Please upload an image file';
+                    this.value = '';
+                    fileNameDisplay.textContent = '';
+                    return;
+                }
+
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    fileError.textContent = 'File size should be less than 5MB';
+                    this.value = '';
+                    fileNameDisplay.textContent = '';
+                    return;
+                }
+
+                fileNameDisplay.textContent = 'Selected: ' + file.name;
+            }
+        });
+
+        // Handle form submission
+        helloForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const file = avatarInput.files[0];
+            const name = nameInput.value.trim();
+
+            if (!file) {
+                fileError.textContent = 'Please select an avatar image';
+                return;
+            }
+
+            if (!name) {
+                console.error('Please enter your name');
+                return;
+            }
+
+            // Read file and display
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                avatarDisplay.src = event.target.result;
+                nameDisplay.textContent = name;
+
+                // Switch to greeting section
+                formSection.classList.remove('active');
+                greetingSection.classList.add('active');
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Handle go back
+        function goBack() {
+            // Reset form
+            helloForm.reset();
+            fileNameDisplay.textContent = '';
+            fileError.textContent = '';
+
+            // Switch back to form section
+            formSection.classList.add('active');
+            greetingSection.classList.remove('active');
+        }
+    </script>
+</body>
+</html>
